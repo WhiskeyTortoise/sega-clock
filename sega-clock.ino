@@ -31,11 +31,22 @@ int period = 900;
 
 void connectWifi(){
   WiFi.begin(ssid, password);
+  int count=0;
   while(WiFi.status() != WL_CONNECTED) {
     delay(500);
-
+    count++;
+    if (count > 20){
+      break;
+    }
   }
-  tft.drawString("Wifi Connected!",70,50,4);
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextDatum(MC_DATUM);
+  if (WiFi.status() != WL_CONNECTED){
+    tft.drawString("no wifi.",tft.width() / 2, tft.height() / 2,4);
+  }else{
+    tft.drawString("wifi connected",tft.width() / 2, tft.height() / 2,4);
+  }
+
   delay(2000);
 }
 
@@ -60,7 +71,7 @@ void getTime() {
 void setup() {
   
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(3);
   tft.fillScreen(TFT_BLACK);
   connectWifi();
   getTime();
@@ -68,6 +79,7 @@ void setup() {
 
   sprite.createSprite(320,170);
   sprite.fillSprite(TFT_BLACK);
+  //sprite.setTextDatum(MC_DATUM);
   sprite.loadFont(segaFont);
   sprite.setTextColor(TFT_ORANGE);
   sprite.pushSprite(0,0);
@@ -81,7 +93,11 @@ void loop() {
   }
 
   sprite.fillSprite(TFT_BLACK);
-  sprite.drawString(String(timeHour) + ":" + String(timeMin) + ":" + String(timeSec),35,55);
+  
+  // Always Center
+  //sprite.drawString(String(timeHour) + ":" + String(timeMin) + ":" + String(timeSec),tft.width() / 2, tft.height() / 2);
+  sprite.drawString(String(timeHour) + ":" + String(timeMin) + ":" + String(timeSec),20,50);
+
   sprite.pushSprite(0,0);
   delay(1000);
 
